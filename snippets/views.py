@@ -5,10 +5,10 @@ from rest_framework.renderers import JSONRenderer
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 
-from rest_framework import status
+# from rest_framework import status
 # from rest_framework.decorators import api_view
 
-from rest_framework import mixins
+# from rest_framework import mixins
 from rest_framework import generics
 
 
@@ -23,6 +23,17 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
+class SnippetList(generics.ListCreateAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+''''
 #使用混合（mixins）
 class SnippetList(mixins.ListModelMixin,
                   mixins.CreateModelMixin,
@@ -52,7 +63,7 @@ class SnippetDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
+'''
 
 '''
 # 视图函数
