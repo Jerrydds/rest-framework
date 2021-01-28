@@ -1,0 +1,19 @@
+.idea
+__pycache__
+demo.py
+report
+.pytest_cache
+.vscode
+_book
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
