@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from rest_framework.renderers import JSONRenderer
 # from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
+from snippets.permissions import IsOwnerOrReadOnly
 from snippets.serializers import SnippetSerializer
 
 # from rest_framework import status
@@ -41,7 +42,7 @@ class SnippetList(generics.ListCreateAPIView):
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
 # ListAPIView和RetrieveAPIView通用的基于类的视图
