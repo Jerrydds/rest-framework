@@ -13,13 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+# from django.contrib import admin
 # from django.urls import path
-from django.conf.urls import url, include
 
+from django.conf.urls import url, include
+from snippets import views
+from rest_framework.routers import DefaultRouter
+
+# 创建路由器并注册我们的视图。
+router = DefaultRouter()
+router.register(r'snippets', views.SnippetViewSet)
+router.register(r'users', views.UserViewSet)
+
+# API URL现在由路由器自动确定。
+# 另外，我们还要包含可浏览的API的登录URL。
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    url(r'^', include('snippets.urls')),
+    url(r'^', include(router.urls)),
     # 给Browsable API添加登陆
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
