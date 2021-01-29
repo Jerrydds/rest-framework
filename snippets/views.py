@@ -7,7 +7,6 @@ from snippets.permissions import IsOwnerOrReadOnly
 from snippets.serializers import SnippetSerializer
 
 # from rest_framework import status
-# from rest_framework.decorators import api_view
 
 # from rest_framework import mixins
 from rest_framework import generics
@@ -15,7 +14,14 @@ from rest_framework import generics
 from django.contrib.auth.models import User
 from snippets.serializers import UserSerializer
 
-from rest_framework import permissions # 添加视图所需的权限,代码片段与用户是相关联的
+from rest_framework import permissions  # 添加视图所需的权限,代码片段与用户是相关联的
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+from rest_framework import renderers
+
 
 class JSONResponse(HttpResponse):
     """
@@ -26,6 +32,23 @@ class JSONResponse(HttpResponse):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'snippets': reverse('snippet-list', request=request, format=format)
+    })
+
+
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = (renderers.StaticHTMLRenderer,)
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
 
 
 # REST框架自带已经混合好的（mixed-in）通用视图
