@@ -11,6 +11,10 @@ from snippets.serializers import SnippetSerializer
 # from rest_framework import mixins
 from rest_framework import generics
 
+from django.contrib.auth.models import User
+from snippets.serializers import UserSerializer
+
+from rest_framework import permissions # 添加视图所需的权限,代码片段与用户是相关联的
 
 class JSONResponse(HttpResponse):
     """
@@ -23,14 +27,32 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
+# REST框架自带已经混合好的（mixed-in）通用视图
 class SnippetList(generics.ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    # 将Snippet和用户关联
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+# ListAPIView和RetrieveAPIView通用的基于类的视图
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 ''''
@@ -74,7 +96,7 @@ def snippet_list(request, format=None):
     """
     if request.method == 'GET':
         snippets = Snippet.objects.all()
-        # 序列化查询结果集（querysets）而不是模型实例 many=True
+        # "many=True"序列化查询结果集（querysets）而不是模型实例 
         serializer = SnippetSerializer(snippets, many=True)
         return Response(serializer.data)
 
