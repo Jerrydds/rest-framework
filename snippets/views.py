@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 # from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
+# from rest_framework.renderers import JSONRenderer
 # from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.permissions import IsOwnerOrReadOnly
@@ -25,17 +25,6 @@ from rest_framework import viewsets
 # from rest_framework.decorators import detail_route
 from rest_framework.decorators import action
 
-'''
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-'''
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -43,7 +32,6 @@ def api_root(request, format=None):
         'users': reverse('user-list', request=request, format=format),
         'snippets': reverse('snippet-list', request=request, format=format)
     })
-
 
 
 class SnippetViewSet(viewsets.ModelViewSet):
@@ -167,6 +155,7 @@ def snippet_list(request, format=None):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    
 @api_view(['GET', 'PUT', 'DELETE'])
 def snippet_detail(request, pk, format=None):
     """
@@ -194,7 +183,18 @@ def snippet_detail(request, pk, format=None):
 
 
 '''
+
 '''
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
 @csrf_exempt
 def snippet_list(request):

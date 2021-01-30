@@ -5,6 +5,7 @@ report
 .pytest_cache
 .vscode
 _book
+.sqlite3
 
 # Unit test / coverage reports
 htmlcov/
