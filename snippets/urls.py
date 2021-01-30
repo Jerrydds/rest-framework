@@ -14,6 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf.urls import include, url
+from rest_framework.routers import DefaultRouter
+
+from snippets import views
+
+# 创建路由器并注册我们的视图。
+router = DefaultRouter()
+router.register(r'snippets', views.SnippetViewSet)
+router.register(r'users', views.UserViewSet)
+
+# API URL现在由路由器自动确定。
+# 另外，我们还要包含可浏览的API的登录URL。
+urlpatterns = [
+    url(r'^', include(router.urls))
+]
+
+'''
+
 from django.conf.urls import url
 from snippets import views
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -54,6 +72,8 @@ urlpatterns = format_suffix_patterns([
     url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user-detail'),
 
 ])
+
+'''
 
 '''
 
